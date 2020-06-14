@@ -9,7 +9,7 @@ function LyricsField(props){
     inputField.current.focus();
   }
   return(
-  <p>
+  <div className="container" style={{flexDirection:"column", alignItems:"center"}}>
     <span 
     style={{fontWeight: props.focused?"bold":"normal"}}
     onClick={(e)=>{
@@ -19,7 +19,6 @@ function LyricsField(props){
     }
     >{props.time}: {props.text}
     </span>
-    <br></br>
     <input type="text"
           ref={inputField} 
           value={text} 
@@ -30,13 +29,13 @@ function LyricsField(props){
             }
           }>
     </input>
-    <button onClick={(e)=>{
+    <button style={{maxWidth:"100px"}} onClick={(e)=>{
       e.preventDefault();
       props.editLyrics(text, props.time);
       setText('');
       }}>Edit lyrics
     </button>
-  </p>)
+  </div>)
 }
 
 
@@ -51,7 +50,7 @@ function TimeStampList(props){
 
   return(
   <div className="container" style={{flexDirection:"column"}}>
-  <div style={{border: "1px solid black", overflowY: "scroll", height:"200px", width:"800px"}}>
+  <div style={{border: "1px solid black", overflowY: "scroll", height:"200px", width:"800px", flexDirection:"column", justifyContent:"space-between"}} className="container">
     {Object.keys(props.lyrics).map((t)=>
     <LyricsField 
       text={props.lyrics[t]} 
@@ -62,7 +61,8 @@ function TimeStampList(props){
       setTime={props.setTime}
     />)}
     
-  </div><br></br>
+  </div>
+  <br></br>
   <div>
   <input type="number" value={newTime} ref={add} onChange={(e)=>{e.preventDefault(); setNewTime(e.target.value)}}></input>
   <button onClick={(e)=>{e.preventDefault(); props.addLyrics(newTime); setNewTime(0)}}>Add timestamp</button>
