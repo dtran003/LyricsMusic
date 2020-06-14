@@ -3,43 +3,94 @@ import logo from './logo.svg';
 import './App.css';
 
 function LyricsField(props){
-  const [text, setText]=useState(props.text);
+  const [text, setText]=useState('');
   const inputField= useRef(null);
-  if (props.focused){
+  if (inputField.current && props.focused && (!props.addFocused)){
     inputField.current.focus();
   }
   return(
-  <span>
-    <input type="text" ref={inputField} value={text} onChange={(e)=>{e.preventDefault();setText(e.target.value)}}></input>
-  </span>)
-}
-function TimeStampList(props){
-  
-  return(
-  <div style={{border: "1px solid black", overflowY: "scroll", height:"200px"}}>
-    {props.timestamps.map((t,i)=><p><span 
-    style={{fontWeight: props.check===t?"bold":"normal"}}
+  <p>
+    <span 
+    style={{fontWeight: props.focused?"bold":"normal"}}
     onClick={(e)=>{
       e.preventDefault(); 
-      props.setTime(t);
+      props.setTime(props.time);
       }
     }
-    >{t}</span>: <LyricsField text={props.lyrics[i]} focused={props.check===t} time={t} editLyrics={props.editLyrics} />
-    </p>)}
+    >{props.time}: 
+    </span>
+    {props.text}<br></br>
+    <input type="text"
+          ref={inputField} 
+          value={text} 
+          onChange={(e)=>{
+            e.preventDefault();
+            setText(e.target.value)
+            }
+          }>
+    </input>
+    <button onClick={(e)=>{
+      e.preventDefault();
+      props.editLyrics(text, props.time);
+      setText('');
+      }}>Edit lyrics
+    </button>
+  </p>)
+}
+
+
+function TimeStampList(props){
+  const [newTime, setNewTime] = useState(0);
+  let addFocused=false;
+  const add = useRef(null);
+
+  if (document.activeElement === add.current){
+    addFocused=true;
+  }
+
+  return(
+  <div className="container" style={{flexDirection:"column"}}>
+  <div style={{border: "1px solid black", overflowY: "scroll", height:"200px", width:"800px"}}>
+    {Object.keys(props.lyrics).map((t)=>
+    <LyricsField 
+      text={props.lyrics[t]} 
+      focused={t===props.check} 
+      addFocused={addFocused} 
+      time={t} 
+      editLyrics={props.editLyrics} 
+      setTime={props.setTime}
+    />)}
+    
+  </div>
+  <div>
+  <input type="number" value={newTime} ref={add} onChange={(e)=>{e.preventDefault(); setNewTime(e.target.value)}}></input>
+  <button onClick={(e)=>{e.preventDefault(); props.addLyrics(newTime); setNewTime(0)}}>Add timestamp</button>
+  </div>
   </div>
   )
 }
 function App() {
-  const lyricsFile = useRef(null);
-  const [lyrics, setLyrics] = useState('');
+ 
   const [editStatus, setEditStatus]=useState(0);
   const musicFile = useRef(null);
-  const musicStream = useRef(null);
   const [fileURL, setURL]=useState(null);
+  const musicStream = useRef(null);
+  const lyricsFile = useRef(null);
+  const [lyrics, setLyrics] = useState('');
   const [time2, setTime2]=useState(0);
   const editLyrics=(text, time)=>{
     let bufferLyrics=lyrics;
     bufferLyrics[time]=text;
+    setLyrics(bufferLyrics);
+    if (editStatus===1){
+      setEditStatus(2);
+      return
+    }
+    setEditStatus(1);
+  }
+  const addLyrics=(t)=>{
+    let bufferLyrics=lyrics;
+    bufferLyrics[t]=' ';
     setLyrics(bufferLyrics);
     if (editStatus===1){
       setEditStatus(2);
@@ -67,7 +118,7 @@ function App() {
     reader.readAsText(lyricsFile.current.files[0]);
   }
   if (fileURL){
-    lyricsFileInput=<div><input type="file" ref={lyricsFile}></input>
+    lyricsFileInput=<div className="container"><input type="file" accept="text/*"ref={lyricsFile}></input>
     <button onClick={lyricsSubmit}>Load lyrics</button></div>
   }
  
@@ -90,22 +141,24 @@ function App() {
     musicStream.current.currentTime=t;
   }
     
-  let timestamp=<div style={{border: "1px solid black", overflowY: "scroll", height:"200px"}}></div>;
+  let timestamp=<div className="container" style={{border: "1px solid black", overflowY: "scroll", height:"200px", width:"800px"}}></div>;
   if (fileURL && lyrics){
-    let keys = Object.keys(lyrics);
-    let lyricsList = Object.values(lyrics);
-    timestamp=<TimeStampList check={time2} timestamps={keys} lyrics={lyricsList} setTime={skipTime} editLyrics={editLyrics} />
+    timestamp=<TimeStampList check={time2} lyrics={lyrics} setTime={skipTime} editLyrics={editLyrics} addLyrics={addLyrics}/>
   }
   
   
-  return(<div>Hello World<br></br>
-    <input type="file" accept="audio\*"ref={musicFile}></input>
-    <button onClick={fileSubmit}>Load music</button><br></br>
+  return(<div>
+    <div className="container" style={{flexDirection:"row"}}>
+      <div className="container">
+        <input type="file" accept="audio/*" ref={musicFile}></input>
+        <button onClick={fileSubmit}>Load music</button>
+      </div>
     {lyricsFileInput}
+    </div>
     <div>{time2}</div>
 
-    <div>{timestamp}</div>
-    <div><audio src={fileURL} controls ref={musicStream} onTimeUpdate={getTime} style={{"width":"1000px"}}></audio></div>
+    <div className='container'>{timestamp}</div>
+    <div className="container"><audio src={fileURL} controls ref={musicStream} onTimeUpdate={getTime} style={{"width":"1000px"}}></audio></div>
   </div> 
   )
 }
