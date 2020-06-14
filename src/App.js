@@ -23,6 +23,7 @@ function LyricsField(props){
     <input type="text"
           ref={inputField} 
           value={text} 
+          width = "600px"
           onChange={(e)=>{
             e.preventDefault();
             setText(e.target.value)
@@ -158,7 +159,7 @@ function App() {
     <div>{time2}</div>
 
     <div className='container'>{timestamp}</div>
-    <div className="container"><audio src={fileURL} controls ref={musicStream} onTimeUpdate={getTime} style={{"width":"1000px"}}></audio></div>
+    <div className="container"><audio src={fileURL} controls ref={musicStream} onTimeUpdate={getTime} style={{"width":"800px"}}></audio></div>
   </div> 
   )
 }
