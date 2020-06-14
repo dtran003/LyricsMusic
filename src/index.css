@@ -16,3 +16,8 @@ code {
   display: flex;
   justify-content: center;
 }
+label{
+  border: 1px solid black;
+    display: inline-block;
+    padding: 6px 12px;
+}

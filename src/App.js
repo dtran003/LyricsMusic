@@ -17,13 +17,13 @@ function LyricsField(props){
       props.setTime(props.time);
       }
     }
-    >{props.time}: 
+    >{props.time}: {props.text}
     </span>
-    {props.text}<br></br>
+    <br></br>
     <input type="text"
           ref={inputField} 
           value={text} 
-          width = "600px"
+          style={{width:"500px"}}
           onChange={(e)=>{
             e.preventDefault();
             setText(e.target.value)
@@ -62,7 +62,7 @@ function TimeStampList(props){
       setTime={props.setTime}
     />)}
     
-  </div>
+  </div><br></br>
   <div>
   <input type="number" value={newTime} ref={add} onChange={(e)=>{e.preventDefault(); setNewTime(e.target.value)}}></input>
   <button onClick={(e)=>{e.preventDefault(); props.addLyrics(newTime); setNewTime(0)}}>Add timestamp</button>
@@ -118,10 +118,9 @@ function App() {
     }
     reader.readAsText(lyricsFile.current.files[0]);
   }
-  if (fileURL){
-    lyricsFileInput=<div className="container"><input type="file" accept="text/*"ref={lyricsFile}></input>
-    <button onClick={lyricsSubmit}>Load lyrics</button></div>
-  }
+  
+ 
+
  
   const getTime=(e)=>{
     e.preventDefault();
@@ -130,7 +129,7 @@ function App() {
     }
     let i=0;
     let bufferTime2=0;
-    while (musicStream.current.currentTime>Object.keys(lyrics)[i]){
+    while (musicStream.current.currentTime>=Object.keys(lyrics)[i]){
       bufferTime2=Object.keys(lyrics)[i];
       i=i+1;
     }
@@ -147,16 +146,16 @@ function App() {
     timestamp=<TimeStampList check={time2} lyrics={lyrics} setTime={skipTime} editLyrics={editLyrics} addLyrics={addLyrics}/>
   }
   
-  
+  lyricsFileInput=<div className="container">
+  <label><input style={{display:"none"}}type="file" accept="text/*"ref={lyricsFile} onChange={lyricsSubmit}></input>Load lyrics</label>
+  </div>
   return(<div>
-    <div className="container" style={{flexDirection:"row"}}>
+    <div className="container" style={{flexDirection:"row", justifyContent:"space-evenly"}}>
       <div className="container">
-        <input type="file" accept="audio/*" ref={musicFile}></input>
-        <button onClick={fileSubmit}>Load music</button>
+        <label><input style={{display:"none"}}type="file" accept="audio/*" ref={musicFile} onChange={fileSubmit}></input>Load music</label>
       </div>
-    {lyricsFileInput}
+      {lyricsFileInput}
     </div>
-    <div>{time2}</div>
 
     <div className='container'>{timestamp}</div>
     <div className="container"><audio src={fileURL} controls ref={musicStream} onTimeUpdate={getTime} style={{"width":"800px"}}></audio></div>
