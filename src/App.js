@@ -3,50 +3,72 @@ import logo from './logo.svg';
 import './App.css';
 
 function LyricsField(props){
+  const [isShown, setIsShown]=useState(false);
+  const inputStyle = {
+    width: '500px',
+    display: isShown? "block":"none"
+  }
+  const buttonStyle = {
+    maxWidth: '100px',
+    display: isShown? "inline": "none"
+  }
+  const displayButtonText = isShown? "Hide":"Edit lyrics";
   const [text, setText]=useState('');
+  const convertTime=(t)=>{
+    let seconds = t%60;
+    let minutes = (t-seconds)/60;
+    if (seconds<10){
+      seconds='0'+seconds.toString();
+    }
+    return (`${minutes}:${seconds}`);
+  }
   const inputField= useRef(null);
-  if (inputField.current && props.focused && (!props.addFocused)){
-    inputField.current.focus();
+  if (inputField.current && props.focused ){
+    inputField.current.scrollIntoView();
   }
   return(
-  <div className="container" style={{flexDirection:"column", alignItems:"center"}}>
+  <div  className="container" style={{flexDirection:"column", alignItems:"center"}}>
     <span 
+    ref={inputField} 
     style={{fontWeight: props.focused?"bold":"normal"}}
     onClick={(e)=>{
       e.preventDefault(); 
       props.setTime(props.time);
       }
     }
-    >{props.time}: {props.text}
+    >{convertTime(props.time)}- {props.text}
     </span>
     <input type="text"
-          ref={inputField} 
+           
           value={text} 
-          style={{width:"500px"}}
+          style={inputStyle}
           onChange={(e)=>{
             e.preventDefault();
             setText(e.target.value)
             }
           }>
     </input>
-    <button style={{maxWidth:"100px"}} onClick={(e)=>{
+    <div>
+    <button style={buttonStyle} onClick={(e)=>{
       e.preventDefault();
       props.editLyrics(text, props.time);
       setText('');
       }}>Edit lyrics
     </button>
+    <button onClick={(e)=>{e.preventDefault(); setIsShown(!isShown)}}>{displayButtonText}</button>
+    </div>
   </div>)
 }
 
 
 function TimeStampList(props){
   const [newTime, setNewTime] = useState(0);
-  let addFocused=false;
+  //let addFocused=false;
   const add = useRef(null);
 
-  if (document.activeElement === add.current){
-    addFocused=true;
-  }
+  //if (document.activeElement === add.current){
+  //  addFocused=true;
+  //}
 
   return(
   <div className="container" style={{flexDirection:"column"}}>
@@ -55,7 +77,7 @@ function TimeStampList(props){
     <LyricsField 
       text={props.lyrics[t]} 
       focused={t===props.check} 
-      addFocused={addFocused} 
+      //addFocused={addFocused} 
       time={t} 
       editLyrics={props.editLyrics} 
       setTime={props.setTime}
