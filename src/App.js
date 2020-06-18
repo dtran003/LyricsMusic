@@ -240,11 +240,6 @@ function App() {
   
   
   
-  lyricsFileInput=<div className="container">
-    <label><input style={{display:"none"}}type="file" accept="text/*"ref={lyricsFile} onChange={lyricsSubmit}></input>
-        Load lyrics
-    </label>
-  </div>
   
   const editMode=()=>{
     setEdit(!isEditing);
@@ -291,18 +286,26 @@ function App() {
 
     const file3 = new Blob(highlights);
     const highlightsURL = URL.createObjectURL(file3)
+
     alert ("Lyrics and highlight saved as "+filename);
     setDownload([filename, lyricsTimeStamp, noTimestampURL, highlightsURL]);
 
   }
+
+
   return(<div className="container" style={{flexDirection:"column", alignItems:"center"}}>
-    <div className="container"  style={{flexDirection:"row", justifyContent:"flex-start", width:"800px"}}>
-      <div className="container">
+    <div className="container"  style={{flexDirection:"column", justifyContent:"flex-start", width:"800px"}}>
+      <div>
+      <div>
         <label><input style={{display:"none"}}type="file" accept="audio/*" ref={musicFile} onChange={fileSubmit}></input>Load music</label>
       </div>
-      {lyricsFileInput}
-      <button onClick={editMode}>Edit/Highlight</button>
+      <div>
+        <label style={{width:"80px"}}><input style={{display:"none"}}type="file" accept="text/*" ref={lyricsFile} onChange={lyricsSubmit}></input>Load lyrics</label>
+      </div>
+      </div>
+      <div><button onClick={editMode}>Edit/Highlight</button>
       {highlightButton}
+      </div>
       <input type="text" placeholder="search" value={searchText} onChange={(e)=>{e.preventDefault(); setSearchText(e.target.value)}}></input>
     </div>
 
@@ -310,7 +313,7 @@ function App() {
     <div className="container"><audio src={fileURL} controls ref={musicStream} onTimeUpdate={getTime} style={{"width":"800px"}}></audio></div>
     {playBackButtons}
     <div>
-    <button onClick={(e)=>{e.preventDefault(); exportLyrics(linkName)}}>Save and export lyrics/highlights as</button>:
+    <button onClick={(e)=>{e.preventDefault(); exportLyrics(linkName)}}>Save and export lyrics/highlights as (.txt, .doc or .rtf)</button>:
     <input type='text' value={linkName} onChange={(e)=>setLinkName(e.target.value)}></input>
     </div>
     <div className='container' style={{flexDirection:'column', alignItems:"center"}}>
