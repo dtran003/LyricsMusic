@@ -240,10 +240,22 @@ function App() {
   
   const [download, setDownload]= useState([]);
   const exportLyrics=(filename)=>{
+    setDownload([]);
     let text = [JSON.stringify(lyrics)];
-    const file = new Blob(text, {type:'application/json'});
-    const url = URL.createObjectURL(file);
-    setDownload([filename,url]);
+    const file1 = new Blob(text);
+    const lyricsTimeStamp = URL.createObjectURL(file1);
+
+    let noTimestamp=[];
+    for (let t in lyrics){
+      noTimestamp.push(lyrics[t]+"\n")
+    }
+    const file2 = new Blob(noTimestamp)
+    const noTimestampURL = URL.createObjectURL(file2);
+
+    const file3 = new Blob(highlights);
+    const highlightsURL = URL.createObjectURL(file3)
+    setDownload([filename, lyricsTimeStamp, noTimestampURL, highlightsURL]);
+
   }
   
   lyricsFileInput=<div className="container">
@@ -256,7 +268,6 @@ function App() {
     setEdit(!isEditing);
     setHighlights([]);
   }
-  const [exportHighlights, setHighlightsDownload] = useState(<a>Export highlights</a>);
   const colorArray=["red", "blue", "green", "yellow", "green"];
   const [highlightColor, setColor] = useState(0);
   const [highlights, setHighlights] = useState([]);
@@ -273,10 +284,6 @@ function App() {
 
     bufferHighlights.push(range.toString()+"\n");
     setHighlights(bufferHighlights);
-    let blobHighlight = new Blob(highlights);
-    const highlightURL = URL.createObjectURL(blobHighlight);
-     
-    setHighlightsDownload(<a href={highlightURL} download="highlight.txt">Export highlights</a>);
   }
 
 
@@ -286,7 +293,7 @@ function App() {
 
   }
 
-
+  const [linkName, setLinkName] = useState('lyrics.txt');
   return(<div className="container" style={{flexDirection:"column", alignItems:"center"}}>
     <div className="container"  style={{flexDirection:"row", justifyContent:"flex-start", width:"800px"}}>
       <div className="container">
@@ -301,10 +308,18 @@ function App() {
     <div className='container'>{timestamp}</div>
     <div className="container"><audio src={fileURL} controls ref={musicStream} onTimeUpdate={getTime} style={{"width":"800px"}}></audio></div>
     {playBackButtons}
-    <form>
-    <a href={download[1]} download={download[0]}>Export lyrics to be reused(.doc, .txt or .rtf)</a>: <input type='text' onChange={(e)=>{e.preventDefault(); exportLyrics(e.target.value)}}></input>
-    </form>
-    {exportHighlights}
+    <div>
+    <button onClick={(e)=>{e.preventDefault(); exportLyrics(linkName)}}>Save and export lyrics/highlights as</button>:
+    <input type='text' value={linkName} onChange={(e)=>setLinkName(e.target.value)}></input>
+    </div>
+    <div className='container' style={{flexDirection:'column', alignItems:"center"}}>
+    <a href={download[1]} download={download[0]}>Export lyrics to be reused</a>
+    <a href={download[2]} download={download[0]}>Export lyrics without timestamp</a>
+    <a href={download[3]} download={download[0]}>Export highlights only</a>
+    </div>
+
+
+
   </div> 
   )
 }
