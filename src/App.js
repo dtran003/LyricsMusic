@@ -238,25 +238,7 @@ function App() {
     timestamp=<TimeStampList isEdit={isEditing} check={time2} lyrics={lyrics2} setTime={skipTime} editLyrics={editLyrics} addLyrics={addLyrics}/>
     }
   
-  const [download, setDownload]= useState([]);
-  const exportLyrics=(filename)=>{
-    setDownload([]);
-    let text = [JSON.stringify(lyrics)];
-    const file1 = new Blob(text);
-    const lyricsTimeStamp = URL.createObjectURL(file1);
-
-    let noTimestamp=[];
-    for (let t in lyrics){
-      noTimestamp.push(lyrics[t]+"\n")
-    }
-    const file2 = new Blob(noTimestamp)
-    const noTimestampURL = URL.createObjectURL(file2);
-
-    const file3 = new Blob(highlights);
-    const highlightsURL = URL.createObjectURL(file3)
-    setDownload([filename, lyricsTimeStamp, noTimestampURL, highlightsURL]);
-
-  }
+  
   
   lyricsFileInput=<div className="container">
     <label><input style={{display:"none"}}type="file" accept="text/*"ref={lyricsFile} onChange={lyricsSubmit}></input>
@@ -294,6 +276,25 @@ function App() {
   }
 
   const [linkName, setLinkName] = useState('lyrics.txt');
+  const [download, setDownload]= useState([]);
+  const exportLyrics=(filename)=>{
+    let text = [JSON.stringify(lyrics)];
+    const file1 = new Blob(text);
+    const lyricsTimeStamp = URL.createObjectURL(file1);
+
+    let noTimestamp=[];
+    for (let t in lyrics){
+      noTimestamp.push(lyrics[t]+"\n")
+    }
+    const file2 = new Blob(noTimestamp)
+    const noTimestampURL = URL.createObjectURL(file2);
+
+    const file3 = new Blob(highlights);
+    const highlightsURL = URL.createObjectURL(file3)
+    alert ("Lyrics and highlight saved as "+filename);
+    setDownload([filename, lyricsTimeStamp, noTimestampURL, highlightsURL]);
+
+  }
   return(<div className="container" style={{flexDirection:"column", alignItems:"center"}}>
     <div className="container"  style={{flexDirection:"row", justifyContent:"flex-start", width:"800px"}}>
       <div className="container">
