@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField'
+import { Link } from '@material-ui/core';
 function LyricsField(props){
   const inputStyle = {
     width: '500px',
@@ -321,9 +322,9 @@ function App() {
     <TextField value={linkName} onChange={(e)=>setLinkName(e.target.value)}></TextField>
     </div>
     <div className='container' style={{flexDirection:'column', alignItems:"center"}}>
-    <a href={download[1]} download={download[0]}>Export lyrics to be reused</a>
-    <a href={download[2]} download={download[0]}>Export lyrics without timestamp</a>
-    <a href={download[3]} download={download[0]}>Export highlights only</a>
+    <Link href={download[1]} download={download[0]}>Export lyrics to be reused</Link>
+    <Link href={download[2]} download={download[0]}>Export lyrics without timestamp</Link>
+    <Link href={download[3]} download={download[0]}>Export highlights only</Link>
     </div>
 
 
