@@ -1,7 +1,8 @@
 import React, {useState, useRef} from 'react';
 import logo from './logo.svg';
 import './App.css';
-
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField'
 function LyricsField(props){
   const inputStyle = {
     width: '500px',
@@ -189,7 +190,6 @@ function App() {
   }
 
 
-  let lyricsFileInput=null;
   const lyricsSubmit = (e)=>{
     e.preventDefault();
     let reader= new FileReader();
@@ -266,7 +266,7 @@ function App() {
 
   let highlightButton=null;
   if (!isEditing){
-    highlightButton=<button onClick={highlightText}>Highlight selected text</button>
+    highlightButton=<Button variant="contained" color="secondary" onClick={highlightText}>Highlight selected text</Button>
 
   }
 
@@ -297,24 +297,28 @@ function App() {
     <div className="container"  style={{flexDirection:"column", justifyContent:"flex-start", width:"800px"}}>
       <div>
       <div>
-        <label><input style={{display:"none"}}type="file" accept="audio/*" ref={musicFile} onChange={fileSubmit}></input>Load music</label>
+        <label><input style={{display:"none"}} type="file" accept="audio/*" ref={musicFile} onChange={fileSubmit}></input>
+        <Button variant="raised"  component="span">Load music</Button>
+        </label>
       </div>
       <div>
-        <label style={{width:"80px"}}><input style={{display:"none"}}type="file" accept="text/*" ref={lyricsFile} onChange={lyricsSubmit}></input>Load lyrics</label>
+        <label><input style={{display:"none"}} type="file" accept="text/*" ref={lyricsFile} onChange={lyricsSubmit}></input>
+        <Button variant="raised" component="span">Load lyrics</Button>
+        </label>
       </div>
       </div>
-      <div><button onClick={editMode}>Edit/Highlight</button>
+      <div><Button variant="contained" color="secondary" onClick={editMode}>Edit/Highlight</Button>
       {highlightButton}
       </div>
-      <input type="text" placeholder="search" value={searchText} onChange={(e)=>{e.preventDefault(); setSearchText(e.target.value)}}></input>
+      <TextField variant="outlined" placeholder="search" value={searchText} onChange={(e)=>{e.preventDefault(); setSearchText(e.target.value)}}></TextField>
     </div>
 
     <div className='container'>{timestamp}</div>
     <div className="container"><audio src={fileURL} controls ref={musicStream} onTimeUpdate={getTime} style={{"width":"800px"}}></audio></div>
     {playBackButtons}
     <div>
-    <button onClick={(e)=>{e.preventDefault(); exportLyrics(linkName)}}>Save and export lyrics/highlights as (.txt, .doc or .rtf)</button>:
-    <input type='text' value={linkName} onChange={(e)=>setLinkName(e.target.value)}></input>
+    <Button variant ="contained" color="default" onClick={(e)=>{e.preventDefault(); exportLyrics(linkName)}}>Save and export lyrics/highlights as (.txt, .doc or .rtf)</Button>:
+    <TextField value={linkName} onChange={(e)=>setLinkName(e.target.value)}></TextField>
     </div>
     <div className='container' style={{flexDirection:'column', alignItems:"center"}}>
     <a href={download[1]} download={download[0]}>Export lyrics to be reused</a>
